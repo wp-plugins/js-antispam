@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: JS AntiSpam
-Plugin URI: http://bueltge.de
-Description: Simple antispam plugin without questions on Javascript-solution. Without JS-Solutions give it an textbox.
+Plugin URI: http://bueltge.de/wp-js-antispam-plugin/418
+Description: Simple antispam plugin without questions on Javascript-solution. Without JS-Solutions give it an textbox. The answers can you write in the <a href="admin.php?page=fb_antispam.php">options</a>.
 Author: Frank Bueltge
 Author URI: http://bueltge.de
-Version: 0.7
+Version: 0.8
 */
 
 /*
@@ -111,10 +111,10 @@ class fbjsas_check {
 		if ((get_option('fbjsas_trackback') == '1') && ($comment_type == 'trackback' || $comment_type == 'pingback' || $comment_type === '')) {
 			if( $answer == '' ) {
 				$this->fbjsas_delete_comment($post_ID);
-				wp_die($errors['empty'] .'<br /><br /><strong>' . __('Dein Kommentar:', 'fbjsas') . '</strong><br /><em>'. $comment_content .'</em>');
+				wp_die($errors['empty'] .'<br /><br /><strong>' . __('Your comment:', 'js_antispam') . '</strong><br /><em>'. $comment_content .'</em>');
 			} elseif ( $answer != $select_answer ) {
 				$this->fbjsas_delete_comment($post_ID);
-				wp_die($errors['wrong'] .'<br /><br /><strong>' . __('Dein Kommentar:', 'fbjsas') . '</strong><br /><em>'. $comment_content .'</em>');
+				wp_die($errors['wrong'] .'<br /><br /><strong>' . __('Your comment:', 'js_antispam') . '</strong><br /><em>'. $comment_content .'</em>');
 			}
 		}
 		return $post_ID;
@@ -169,24 +169,24 @@ function fbjsas_page() {
 ?>
 
 	<div class="wrap" id="config">		
-		<h2><?php _e('JS AntiSpam', 'fbjsas'); ?></h2>
+		<h2><?php _e('JS AntiSpam', 'js_antispam'); ?></h2>
 		<fieldset class="options">
-		<legend><?php _e('Einstellungen', 'fbjsas'); ?></legend>
+		<legend><?php _e('Options', 'js_antispam'); ?></legend>
 		<form method="post" id="fbjsas_options" action="">
-			<p><strong><?php _e('Antwort:', 'fbjsas'); ?> </strong><small><?php _e('m&ouml;gliche Antworten,  Trenne mehrere Antworten durch einen Zeilenumbruch. Je komplexer die Antworten, desto schwieriger ist es f&uuml;r den Spambot-Robot, aber auch f&uuml;r den kommentierenden Besucher. Vergebe viele Antworten und es wird per Zufall eines ausgew&auml;hlt. Wenn du keine Antwort vergibst, dann ist die Standardantwort "Spamschutz".', 'fbjsas'); ?></small><br /><textarea name="fbjsas_nojsanswer" cols="60" rows="4" id="fbjsas_nojsanswer" style="width: 99%;" ><?php form_option('fbjsas_nojsanswer'); ?></textarea></p>
-			<p><strong><?php _e('Hinweis:', 'fbjsas'); ?> </strong><small><?php _e('Vergebe den Schl&uuml;ssel %word% f&uuml;r das Antwort-Wort und es wird an deiser Stelle deiner Antwort erscheinen.', 'fbjsas'); ?></small><br /><textarea class="code" rows="1" cols="60" name="fbjsas_advice" id="fbjsas_advice" style="width: 99%;" /><?php echo stripslashes(get_option('fbjsas_advice')); ?></textarea></p>
-			<p><strong><?php _e('Leer:', 'fbjsas'); ?> </strong><small><?php _e('Dein Hinweis, wenn das Feld <strong>nicht</strong> ausgef&uuml;llt wurde. xHTML m&ouml;glich', 'fbjsas'); ?></small><br /><textarea class="code" rows="3" cols="60" name="fbjsas_empty" id="fbjsas_empty" style="width: 99%;" /><?php echo stripslashes(get_option('fbjsas_empty')); ?></textarea></p>
-			<p><strong><?php _e('Falsch:', 'fbjsas'); ?> </strong><small><?php _e('Dein Hinweis, wenn das Feld <strong>falsch</strong> ausgef&uuml;llt wurde. xHTML m&ouml;glich', 'fbjsas'); ?></small><br /><textarea class="code" rows="3" cols="60" name="fbjsas_wrong" id="fbjsas_wrong" style="width: 99%;" /><?php echo stripslashes(get_option('fbjsas_wrong')); ?></textarea></p>
-			<p><strong><?php _e('Kommentare sofort L&ouml;schen:', 'fbjsas'); ?> </strong><br /><input name="fbjsas_delete" id="fbjsas_delete" value='1' <?php if(get_option('fbjsas_delete') == '1') { echo "checked='checked'";  } ?> type="checkbox" /> <small><?php _e('Kommentare, die als Spam erkannt werden sofort l&ouml;schen oder als Spam in der Datenbank ablegen?', 'fbjsas'); ?> <br /><strong><?php _e('Achtung (gilt auch f&uuml;r die nachfolgenden Felder Trackback und Pingback)</strong> Aktiviere den Options-Button, wenn du keine Informationen mit Index "spam" in der Datenbank stehen haben willst. Eintr&auml;ge in der Datenbank, die mit dem Index "spam" hinterlegt sind, k&ouml;nnen zum Beispiel mit dem Plugin <a href=\"http://bueltge.de/wp-spamviewer-zum-loeschen-und-retten-von-spam/255\" title=\"zum Plugin\">SpamViewer</a> gelistet werden und eventuelle Fehleintr&auml;ge oder Pingbacks k&ouml;nnen gerettet werden. Au&szlig;erdem wird bei nicht aktiviertem Options-Button und falscher Eingabe des Spam-Pr&uuml;ffeldes die wiederholte Eingabe des Kommentares als "Doppelter Content" angesehen und ist nicht m&ouml;glich, es muss min. ein Zeichen ver&auml;ndert werden.', 'fbjsas'); ?></small></p>
-			<p><strong><?php _e('Trackback sofort L&ouml;schen:', 'fbjsas'); ?> </strong><br /><input name="fbjsas_delete_tb" id="fbjsas_delete_tb" value='1' <?php if(get_option('fbjsas_delete_tb') == '1') { echo "checked='checked'";  } ?> type="checkbox" /> <small><?php _e('Trackbacks, die als Spam erkannt werden sofort l&ouml;schen oder als Spam in der Datenbank ablegen?', 'fbjsas'); ?></small></p>
-			<p><strong><?php _e('Pingback sofort L&ouml;schen:', 'fbjsas'); ?> </strong><br /><input name="fbjsas_delete_pb" id="fbjsas_delete_pb" value='1' <?php if(get_option('fbjsas_delete_pb') == '1') { echo "checked='checked'";  } ?> type="checkbox" /> <small><?php _e('Pingbacks, die als Spam erkannt werden sofort l&ouml;schen oder als Spam in der Datenbank ablegen?', 'fbjsas'); ?></small></p>
-			<p><strong><?php _e('Trackback/Pingback:', 'fbjsas'); ?> </strong><br /><input name="fbjsas_trackback" id="fbjsas_trackback" value='1' <?php if(get_option('fbjsas_trackback') == '1') { echo "checked='checked'";  } ?> type="checkbox" /> <small><?php _e('Trackbacks und Pingbacks nicht filtern und ungepr&uuml;ft passieren lassen.<br />Aktiviere diese Option, wenn du die Option "Sofort L&ouml;schen" gew&auml;hlt hast, denn sonst werden auch Trackbacks und Pingbacks sofort gel&ouml;scht und nicht in der Datenbank erhalten.', 'fbjsas'); ?></small></p>
+			<p><strong><?php _e('Reply:', 'js_antispam'); ?> </strong><small><?php _e('Possible answers. Separate multiple answers through a carriage return. Complex answers will make things more difficult not only for spam robots but visitors as well. The standard reply when no answer is given is "Spam Protection".', 'js_antispam'); ?></small><br /><textarea name="fbjsas_nojsanswer" cols="60" rows="4" id="fbjsas_nojsanswer" style="width: 99%;" ><?php form_option('fbjsas_nojsanswer'); ?></textarea></p>
+			<p><strong><?php _e('Warning:', 'js_antispam'); ?> </strong><small><?php _e('Assign the password hint %word% to see it displayed when prompted.', 'js_antispam'); ?></small><br /><textarea class="code" rows="1" cols="60" name="fbjsas_advice" id="fbjsas_advice" style="width: 99%;" /><?php echo stripslashes(get_option('fbjsas_advice')); ?></textarea></p>
+			<p><strong><?php _e('Empty:', 'js_antispam'); ?> </strong><small><?php _e('The warning you wish to give when the field is <strong>not</strong> filled out. xHTML allowed', 'js_antispam'); ?></small><br /><textarea class="code" rows="3" cols="60" name="fbjsas_empty" id="fbjsas_empty" style="width: 99%;" /><?php echo stripslashes(get_option('fbjsas_empty')); ?></textarea></p>
+			<p><strong><?php _e('Wrong:', 'js_antispam'); ?> </strong><small><?php _e('The warning you wish to give when the field is <strong>not</strong> filled out correctly. xHTML allowed.', 'js_antispam'); ?></small><br /><textarea class="code" rows="3" cols="60" name="fbjsas_wrong" id="fbjsas_wrong" style="width: 99%;" /><?php echo stripslashes(get_option('fbjsas_wrong')); ?></textarea></p>
+			<p><strong><?php _e('Immediately delete comments:', 'js_antispam'); ?> </strong><br /><input name="fbjsas_delete" id="fbjsas_delete" value='1' <?php if(get_option('fbjsas_delete') == '1') { echo "checked='checked'";  } ?> type="checkbox" /> <small><?php _e('Should comments recognized as spam be immediately deleted or saved in the database as spam?', 'js_antispam'); ?> <br /><strong><?php _e('<srong>Careful! (This also applies to the fields Trackback and Pinbback below).</strong> Use this option when you do not wish to have information in your database about "spam" content. Content marked as spam in the database can be viewed with a plugin such as <a href=\'http://bueltge.de/wp-spamviewer-zum-loeschen-und-retten-von-spam/255\' title=\'to the plugin\'>SpamViewer</a> and recovered if applicable. Furthermore, using this option will cause comments re-posted after the spam key was entered incorrectly once to be be treated as double posts, which is not allowed: at least one character must be changed.', 'js_antispam'); ?></small></p>
+			<p><strong><?php _e('Delete trackback immediately:', 'js_antispam'); ?> </strong><br /><input name="fbjsas_delete_tb" id="fbjsas_delete_tb" value='1' <?php if(get_option('fbjsas_delete_tb') == '1') { echo "checked='checked'";  } ?> type="checkbox" /> <small><?php _e('Should trackbacks recognized as spam be immediately deleted or saved in the database as spam?', 'js_antispam'); ?></small></p>
+			<p><strong><?php _e('Delete pingback immediately:', 'js_antispam'); ?> </strong><br /><input name="fbjsas_delete_pb" id="fbjsas_delete_pb" value='1' <?php if(get_option('fbjsas_delete_pb') == '1') { echo "checked='checked'";  } ?> type="checkbox" /> <small><?php _e('Should pingbacks recognized as spam be immediately deleted or saved in the database as spam', 'js_antispam'); ?></small></p>
+			<p><strong><?php _e('Trackback/Pingback:', 'js_antispam'); ?> </strong><br /><input name="fbjsas_trackback" id="fbjsas_trackback" value='1' <?php if(get_option('fbjsas_trackback') == '1') { echo "checked='checked'";  } ?> type="checkbox" /> <small><?php _e('Allow trackbacks and pingbacks to be approved without filtering. <br /> Activate this option when the option "Delete immediately" is active, otherwise tracbacks ans pingbacks will be immediately deleted and not saved in the database.', 'js_antispam'); ?></small></p>
 			<p class="submit"><input class="submit" type="submit" name="Submit" tabindex="10" value="<?php _e('Update Options'); ?> &raquo;" /></p>
 			<input type="hidden" name="page_options" value="'dofollow_timeout'" />
 		</form>
 		</fieldset>
 		<hr />
-		<p><small><?php _e('Weitere Informationen: Besuche die <a href="http://bueltge.de/wp-js-antispam-plugin/418">Plugin-Homepage</a> f&uuml;r zus&auml;tzliche Hinweise und Hintergr&uuml;nde oder hole die letzte Version des Plugins.', 'fbjsas'); ?><br />&copy; Copyright 2007 <a href="http://bueltge.de">Frank B&uuml;ltge</a> | <?php _e('Du willst Danke sagen, dann besuche meine <a href="http://bueltge.de/wunschliste/">Wunschliste</a>.', 'fbjsas'); ?></small></p>
+		<p><small><?php _e('Further information: Visit the <a href=\'http://bueltge.de/wp-js-antispam-plugin/418\'>plugin homepage</a> for further information or to grab the latest version of this plugin.', 'js_antispam'); ?><br />&copy; Copyright 2007 <a href="http://bueltge.de">Frank B&uuml;ltge</a> | <?php _e('You want to thank me? Visit my <a href=\'http://bueltge.de/wunschliste\'>wishlist</a>.', 'js_antispam'); ?></small></p>
 	</div>
 
 <?php
@@ -204,7 +204,7 @@ function fbjsas_update() {
 		update_option('fbjsas_delete_pb', $_POST['fbjsas_delete_pb']);
 		update_option('fbjsas_trackback', $_POST['fbjsas_trackback']);
 
-		echo '<div class="updated"><p>' . __('Die Einstellungen wurden gespeichert.', 'fbjsas') . '</p></div>';
+		echo '<div class="updated"><p>' . __('The options have been saved!', 'js_antispam') . '</p></div>';
 	}
 }
 
