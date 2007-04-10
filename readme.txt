@@ -1,4 +1,4 @@
-=== &copy;Feed ===
+=== JS AntiSpam ===
 Contributors: Bueltge
 Donate link: http://bueltge.de/wunschliste/
 Tags: spam, protection, javascript
