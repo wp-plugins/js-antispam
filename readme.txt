@@ -1,7 +1,7 @@
 === JS AntiSpam ===
 Contributors: Bueltge
 Donate link: http://bueltge.de/wunschliste/
-Tags: spam, protection, javascript
+Tags: spam, protection, javascript, anti-spam
 Requires at least: 1.5
 Tested up to: 2.1.3
 Stable tag: 3.0
