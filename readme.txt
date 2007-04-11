@@ -17,7 +17,7 @@ Please visit [the official website](http://bueltge.de/wp-js-antispam-plugin/418 
 1. Unpack the download-package
 1. Upload all files to the `/wp-content/plugins/` directory, without folder
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Got to 'Options' menu and configure the plugin
+1. Got to 'Manage' menu and configure the plugin
 
 See on [the official website](http://bueltge.de/wp-js-antispam-plugin/418 "JS AntiSpam").
 
