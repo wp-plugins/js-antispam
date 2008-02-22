@@ -5,7 +5,7 @@ Plugin URI: http://bueltge.de/wp-js-antispam-plugin/418
 Description: Simple antispam plugin without questions on Javascript-solution. Without JS-Solutions give it an textbox. The answers can you write in the <a href="admin.php?page=fb_antispam.php">options</a>.
 Author: Frank Bueltge
 Author URI: http://bueltge.de
-Version: 0.8
+Version: 0.9
 */
 
 /*
@@ -19,6 +19,7 @@ if(function_exists('load_plugin_textdomain'))
 	load_plugin_textdomain('js_antispam', 'wp-content/plugins');
 
 define('BROWSER_QUESTION', false); 
+
 
 // plugin itself
 $fbjsas = new fbjsas_check(); 
@@ -166,12 +167,20 @@ function fbjsas_page() {
 	if($_POST['fbjsas_nojsanswer']){
 		fbjsas_update();
 	}
+
+	if ( ($_POST['action'] == 'deactivate') && $_POST['fbjsas_uninstall'] ) {
+		if (function_exists('current_user_can') && current_user_can('edit_plugins') ) {
+			
+			fbjsas_uninstall();
+			
+		} else {
+			wp_die('<p>'.__('You do not have sufficient permissions to edit plugins for this blog.').'</p>');
+		}
+	}
 ?>
 
 	<div class="wrap" id="config">		
-		<h2><?php _e('JS AntiSpam', 'js_antispam'); ?></h2>
-		<fieldset class="options">
-		<legend><?php _e('Options', 'js_antispam'); ?></legend>
+		<h2><?php _e('JS AntiSpam Options', 'js_antispam'); ?></h2>
 		<form method="post" id="fbjsas_options" action="">
 			<p><strong><?php _e('Reply:', 'js_antispam'); ?> </strong><small><?php _e('Possible answers. Separate multiple answers through a carriage return. Complex answers will make things more difficult not only for spam robots but visitors as well. The standard reply when no answer is given is "Spam Protection".', 'js_antispam'); ?></small><br /><textarea name="fbjsas_nojsanswer" cols="60" rows="4" id="fbjsas_nojsanswer" style="width: 99%;" ><?php form_option('fbjsas_nojsanswer'); ?></textarea></p>
 			<p><strong><?php _e('Warning:', 'js_antispam'); ?> </strong><small><?php _e('Assign the password hint %word% to see it displayed when prompted.', 'js_antispam'); ?></small><br /><textarea class="code" rows="1" cols="60" name="fbjsas_advice" id="fbjsas_advice" style="width: 99%;" /><?php echo stripslashes(get_option('fbjsas_advice')); ?></textarea></p>
@@ -181,19 +190,39 @@ function fbjsas_page() {
 			<p><strong><?php _e('Delete trackback immediately:', 'js_antispam'); ?> </strong><br /><input name="fbjsas_delete_tb" id="fbjsas_delete_tb" value='1' <?php if(get_option('fbjsas_delete_tb') == '1') { echo "checked='checked'";  } ?> type="checkbox" /> <small><?php _e('Should trackbacks recognized as spam be immediately deleted or saved in the database as spam?', 'js_antispam'); ?></small></p>
 			<p><strong><?php _e('Delete pingback immediately:', 'js_antispam'); ?> </strong><br /><input name="fbjsas_delete_pb" id="fbjsas_delete_pb" value='1' <?php if(get_option('fbjsas_delete_pb') == '1') { echo "checked='checked'";  } ?> type="checkbox" /> <small><?php _e('Should pingbacks recognized as spam be immediately deleted or saved in the database as spam', 'js_antispam'); ?></small></p>
 			<p><strong><?php _e('Trackback/Pingback:', 'js_antispam'); ?> </strong><br /><input name="fbjsas_trackback" id="fbjsas_trackback" value='1' <?php if(get_option('fbjsas_trackback') == '1') { echo "checked='checked'";  } ?> type="checkbox" /> <small><?php _e('Allow trackbacks and pingbacks to be approved without filtering. <br /> Activate this option when the option "Delete immediately" is active, otherwise tracbacks ans pingbacks will be immediately deleted and not saved in the database.', 'js_antispam'); ?></small></p>
-			<p class="submit"><input class="submit" type="submit" name="Submit" tabindex="10" value="<?php _e('Update Options'); ?> &raquo;" /></p>
+			<p class="submit">
+				<input class="button" type="submit" name="Submit" tabindex="10" value="<?php _e('Update Options'); ?> &raquo;" />
+			</p>
 			<input type="hidden" name="page_options" value="'dofollow_timeout'" />
 		</form>
-		</fieldset>
-		<hr />
-		<p><small><?php _e('Further information: Visit the <a href=\'http://bueltge.de/wp-js-antispam-plugin/418\'>plugin homepage</a> for further information or to grab the latest version of this plugin.', 'js_antispam'); ?><br />&copy; Copyright 2007 <a href="http://bueltge.de">Frank B&uuml;ltge</a> | <?php _e('You want to thank me? Visit my <a href=\'http://bueltge.de/wunschliste\'>wishlist</a>.', 'js_antispam'); ?></small></p>
+		
+		<div class="tablenav">
+			<br style="clear:both;" />
+		</div>
+		
+		<h2><?php _e('Uninstall options', 'js_antispam') ?></h2>
+		<p><?php _e('This button deletes all options of the JS AntiSpam plugin. Please use it <strong>before</strong> deactivating the plugin.<br /><strong>Attention: </strong>You cannot undo this!', 'js_antispam'); ?></p>
+		<form name="form2" method="post" action="<?php echo $location; ?>">
+			<input type="hidden" name="action" value="deactivate" />
+			<p class="submit">
+					<input class="button" type="submit" name="fbjsas_uninstall" value="<?php _e('Delete Options', 'js_antispam'); ?> &raquo;" />
+			</p>
+		</form>
+
+		<div class="tablenav">
+			<br style="clear:both;" />
+		</div>
+
+		<p><small><?php _e('Further information: Visit the <a href=\'http://bueltge.de/wp-js-antispam-plugin/418\'>plugin homepage</a> for further information or to grab the latest version of this plugin.', 'js_antispam'); ?><br />&copy; Copyright 2007 - <?php echo date('Y'); ?> <a href="http://bueltge.de">Frank B&uuml;ltge</a> | <?php _e('You want to thank me? Visit my <a href=\'http://bueltge.de/wunschliste\'>wishlist</a>.', 'js_antispam'); ?></small></p>
 	</div>
 
 <?php
 }
 
+
 // update options
 function fbjsas_update() {
+	
 	if (!empty($_POST)) {
 		update_option('fbjsas_nojsanswer', $_POST['fbjsas_nojsanswer']);
 		update_option('fbjsas_advice', $_POST['fbjsas_advice']);
@@ -206,16 +235,40 @@ function fbjsas_update() {
 
 		echo '<div class="updated"><p>' . __('The options have been saved!', 'js_antispam') . '</p></div>';
 	}
+	
 }
 
+
 // install options
-function fbjsas_install(){
+function fbjsas_install() {
+	
 	add_option('fbjsas_nojsanswer', 'Mensch');
 	add_option('fbjsas_advice', 'Kein JavaScript, dann gebe bitte das Wort &#8222;<strong>%word%</strong>&#8220; ein');
 	add_option('fbjsas_empty', 'Du hast die Antispam-Frage nicht beantwortet. Dein Kommentar <strong>wurde nicht gespeichert</strong>. Benutze den "Zur&uuml;ck"-Button und beantworte die Frage.');
 	add_option('fbjsas_wrong', 'Du hast die Antispam-Frage nicht richtig beantwortet. Dein Kommentar <strong>wurde nicht gespeichert</strong>. Benutze den "Zur&uuml;ck"-Button und beantworte die Frage richtig (unterscheide Gro&szlig;- und Kleinschreibung).');
 	add_option('fbjsas_trackback', '1');
+	
 }
+
+
+// delete options
+function fbjsas_uninstall() {
+	
+	if (!empty($_POST)) {
+		delete_option('fbjsas_nojsanswer', $_POST['fbjsas_nojsanswer']);
+		delete_option('fbjsas_advice', $_POST['fbjsas_advice']);
+		delete_option('fbjsas_empty', $_POST['fbjsas_empty']);
+		delete_option('fbjsas_wrong', $_POST['fbjsas_wrong']);
+		delete_option('fbjsas_delete', $_POST['fbjsas_delete']);
+		delete_option('fbjsas_delete_tb', $_POST['fbjsas_delete_tb']);
+		delete_option('fbjsas_delete_pb', $_POST['fbjsas_delete_pb']);
+		delete_option('fbjsas_trackback', $_POST['fbjsas_trackback']);
+
+		echo '<div class="updated"><p>' . __('The options have been deleted!', 'js_antispam') . '</p></div>';
+
+	}
+}
+
 
 // add in wp-adminmenu
 function add_fbjsas_page() {
