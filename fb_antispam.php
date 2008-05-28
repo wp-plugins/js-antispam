@@ -5,7 +5,7 @@ Plugin URI: http://bueltge.de/wp-js-antispam-plugin/418
 Description: Simple antispam plugin without questions on Javascript-solution. Without JS-Solutions give it an textbox. The answers can you write in the <a href="admin.php?page=fb_antispam.php">options</a>.
 Author: Frank Bueltge
 Author URI: http://bueltge.de
-Version: 0.9
+Version: 1.0
 */
 
 /*
@@ -16,7 +16,7 @@ Code-Ideas from the plugin Raven's Antispam - http://kahi.cz/blog/ravens-antispa
 */
 
 if(function_exists('load_plugin_textdomain'))
-	load_plugin_textdomain('js_antispam', 'wp-content/plugins');
+	load_plugin_textdomain('js_antispam', str_replace( ABSPATH, '', dirname(__FILE__) ) );
 
 define('BROWSER_QUESTION', false); 
 
