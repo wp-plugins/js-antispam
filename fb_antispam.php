@@ -2,7 +2,7 @@
 /**
  * @package JS AntiSpam
  * @author Frank B&uuml;ltge
- * @version 1.2
+ * @version 1.2.1
  */
  
 /*
@@ -11,8 +11,8 @@ Plugin URI: http://bueltge.de/wp-js-antispam-plugin/418/
 Description: Simple antispam plugin without questions on Javascript-solution. Without JS-Solutions give it an textbox.
 Author: Frank B&uuml;ltge
 Author URI: http://bueltge.de/
-Version: 1.2
-Last Change: 24.11.2008 22:07:10
+Version: 1.2.1
+Last Change: 26.11.2008 14:01:39
 */
 
 /*
@@ -479,7 +479,7 @@ if ( !class_exists('fbjsas_check') ) {
 									<tr valign="top">
 										<th scope="row"><label for="fbjsas_empty"><?php _e('Empty', 'js_antispam'); ?></label></th>
 										<td>
-											<textarea class="code" rows="3" cols="60" name="fbjsas_empty" id="fbjsas_empty" style="width: 99%;" /><?php echo $fbjsas_empty; ?></textarea>
+											<textarea rows="3" cols="60" name="fbjsas_empty" id="fbjsas_empty" style="width: 99%;" /><?php echo $fbjsas_empty; ?></textarea>
 											<br />
 											<?php _e('The warning you wish to give when the field is <strong>not</strong> filled out. xHTML allowed', 'js_antispam'); ?>
 											</td>
@@ -487,7 +487,7 @@ if ( !class_exists('fbjsas_check') ) {
 									<tr valign="top">
 										<th scope="row"><label for="fbjsas_wrong"><?php _e('Wrong', 'js_antispam'); ?></label></th>
 										<td>
-											<textarea class="code" rows="3" cols="60" name="fbjsas_wrong" id="fbjsas_wrong" style="width: 99%;" /><?php echo $fbjsas_wrong; ?></textarea>
+											<textarea rows="3" cols="60" name="fbjsas_wrong" id="fbjsas_wrong" style="width: 99%;" /><?php echo $fbjsas_wrong; ?></textarea>
 											<br />
 											<?php _e('The warning you wish to give when the field is <strong>not</strong> filled out correctly. xHTML allowed.', 'js_antispam'); ?>
 											</td>
