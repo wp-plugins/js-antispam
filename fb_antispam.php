@@ -2,7 +2,7 @@
 /**
  * @package JS AntiSpam
  * @author Frank B&uuml;ltge
- * @version 1.2.1
+ * @version 1.2.2
  */
  
 /*
@@ -11,8 +11,8 @@ Plugin URI: http://bueltge.de/wp-js-antispam-plugin/418/
 Description: Simple antispam plugin without questions on Javascript-solution. Without JS-Solutions give it an textbox.
 Author: Frank B&uuml;ltge
 Author URI: http://bueltge.de/
-Version: 1.2.1
-Last Change: 26.11.2008 14:01:39
+Version: 1.2.2
+Last Change: 23.06.2009 10:37:179
 */
 
 /*
@@ -21,6 +21,13 @@ ACKNOWLEDGEMENTS
 The JS-Idea is made by Jakub Vrána - http://php.vrana.cz/ochrana-formularu-proti-spamu.php
 Code-Ideas from the plugin Raven's Antispam - http://kahi.cz/blog/ravens-antispam-for-wordpress
 */
+
+//avoid direct calls to this file, because now WP core and framework has been used
+if ( !function_exists('add_action') ) {
+	header('Status: 403 Forbidden');
+	header('HTTP/1.1 403 Forbidden');
+	exit();
+}
 
 // Pre-2.6 compatibility
 if ( !defined( 'WP_CONTENT_URL' ) )
@@ -214,7 +221,7 @@ if ( !class_exists('fbjsas_check') ) {
 	
 			?>
 	
-			<p>
+			<p class="js_antispam">
 				<label for="nojsanswer"><?php echo $fbjsas_advice; ?></label>&nbsp;
 				<input type="text" name="nojsanswer" id="nojsanswer" />
 				<input type="hidden" name="select_answer0" id="select_answer0" value="<?php echo $answer[0]; ?>" />
@@ -229,9 +236,10 @@ if ( !class_exists('fbjsas_check') ) {
 			?>
 			
 			<!-- JS AntiSpam Plugin for WordPress by Frank Bueltge | bueltge.de -->
-			<noscript><p><label for="nojsanswer"><?php echo $fbjsas_advice; ?></label> <input type="text" name="nojsanswer" id="nojsanswer" /><input type="hidden" name="select_answer0" id="select_answer0" value="<?php echo $answer[0]; ?>" /><input type="hidden" name="select_answer1" id="select_answer1" value="<?php echo $answer[1]; ?>" /></p></noscript>
-			<script type="text/javascript">/* <![CDATA[ */ document.write('<p><input type="hidden" name="nojsanswer" value="<?php echo $answer[0]; ?>' + '<?php echo $answer[1]; ?>" \/><input type="hidden" name="select_answer0" value="<?php echo $answer[0]; ?>" \/><input type="hidden" name="select_answer1" value="<?php echo $answer[1]; ?>" \/><\/p>'); /* ]]> */</script>
-			
+			<div id="js_antispam">
+				<noscript><p class="js_antispam"><label for="nojsanswer"><?php echo $fbjsas_advice; ?></label> <input type="text" name="nojsanswer" id="nojsanswer" /><input type="hidden" name="select_answer0" id="select_answer0" value="<?php echo $answer[0]; ?>" /><input type="hidden" name="select_answer1" id="select_answer1" value="<?php echo $answer[1]; ?>" /></p></noscript>
+				<script type="text/javascript">/* <![CDATA[ */ document.write('<p class="js_antispam"><input type="hidden" name="nojsanswer" value="<?php echo $answer[0]; ?>' + '<?php echo $answer[1]; ?>" \/><input type="hidden" name="select_answer0" value="<?php echo $answer[0]; ?>" \/><input type="hidden" name="select_answer1" value="<?php echo $answer[1]; ?>" \/><\/p>'); /* ]]> */</script>
+			</div>
 			<?php
 			}
 		}
@@ -553,21 +561,11 @@ if ( !class_exists('fbjsas_check') ) {
 		}		
 		
 	} // end class
-}
 
+	if ( !class_exists('WPlize') ) {
+		require_once('inc/WPlize.php');
+	}
 
-if ( !class_exists('WPlize') ) {
-	require_once('inc/WPlize.php');
-}
-
-
-/* Initialise outselves */
-if ( class_exists('fbjsas_check') && class_exists('WPlize') && function_exists('is_admin') ) {
 	$fbjsas_injector = new fbjsas_check();
-}
-
-
-if ( isset($fbjsas_injector) && function_exists( 'add_action' ) ) {
-	add_action( 'fbjsas_check',  array(&$fbjsas_injector, 'init') );
-}
+} // end if class
 ?>
