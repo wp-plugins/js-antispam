@@ -3,7 +3,7 @@ Contributors: Bueltge
 Donate link: http://bueltge.de/wunschliste/
 Tags: spam, protection, javascript, anti-spam
 Requires at least: 1.5
-Tested up to: 2.8
+Tested up to: 3.0-alpha
 
 Simple antispam plugin without questions on Javascript-solution. Without JS-Solutions give it an textbox.
 
