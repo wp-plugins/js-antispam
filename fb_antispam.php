@@ -1,18 +1,31 @@
 <?php
-/**
- * @package JS AntiSpam
- * @author Frank B&uuml;ltge
- * @version 1.2.2
- */
- 
 /*
 Plugin Name: JS AntiSpam
 Plugin URI: http://bueltge.de/wp-js-antispam-plugin/418/
 Description: Simple antispam plugin without questions on Javascript-solution. Without JS-Solutions give it an textbox.
 Author: Frank B&uuml;ltge
 Author URI: http://bueltge.de/
-Version: 1.2.2
-Last Change: 23.06.2009 10:37:179
+Donate URI: http://bueltge.de/wunschliste/
+License: GPL
+Version: 1.2.3
+Last Change: 23.04.2010 11:30:44
+*/
+
+/*
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+The license is also available at http://www.gnu.org/copyleft/gpl.html
 */
 
 /*
@@ -27,17 +40,17 @@ if ( !function_exists('add_action') ) {
 	header('Status: 403 Forbidden');
 	header('HTTP/1.1 403 Forbidden');
 	exit();
+} else {
+
+	// Pre-2.6 compatibility
+	if ( !defined( 'WP_CONTENT_URL' ) )
+		define( 'WP_CONTENT_URL', get_option( 'siteurl' ) . '/wp-content' );
+	if ( !defined( 'WP_PLUGIN_URL' ) )
+		define( 'WP_PLUGIN_URL', WP_CONTENT_URL. '/plugins' );
+	
+	define( 'BROWSER_QUESTION', false ); 
+	define( 'FB_JSAS_TEXTDOMAIN', 'js_antispam' );
 }
-
-// Pre-2.6 compatibility
-if ( !defined( 'WP_CONTENT_URL' ) )
-	define( 'WP_CONTENT_URL', get_option( 'siteurl' ) . '/wp-content' );
-if ( !defined( 'WP_PLUGIN_URL' ) )
-	define( 'WP_PLUGIN_URL', WP_CONTENT_URL. '/plugins' );
-
-define('BROWSER_QUESTION', false); 
-
-
 /**
  * Images/ Icons in base64-encoding
  * @use function wpag_get_resource_url() for display
@@ -90,7 +103,6 @@ if ( !class_exists('fbjsas_check') ) {
 	
 		// constructor
 		function fbjsas_check() {
-			global $wp_version;
 			
 			// set default options
 			$this->options_array = array('fbjsas_nojsanswer' => 'Mensch',
@@ -110,29 +122,22 @@ if ( !class_exists('fbjsas_check') ) {
 																		 );
 			
 			// wp_hook add_action
-			if ( function_exists('add_action') && is_admin() ) {
+			add_action( 'init', array(&$this,'textdomain') );
+			if ( is_admin() ) {
 				if ( function_exists('register_uninstall_hook') )
 					register_uninstall_hook(__FILE__, array(&$this, 'fbjsas_uninstall') );
 				
-				add_action('admin_menu', array(&$this, 'add_fbjsas_page') );
-				add_action('in_admin_footer', array(&$this, 'add_fbjsas_admin_footer') );
-				
-				if ( version_compare( $wp_version, '2.6.999', '>' ) && file_exists(ABSPATH . '/wp-admin/admin-ajax.php') && (basename($_SERVER['QUERY_STRING']) == 'page=fb_antispam.php') ) {
-					wp_enqueue_script( 'js_antispam_plugin_win_page',  plugins_url( $path = 'js-antispam/js/page.php' ), array('jquery') );
-				} elseif ( version_compare( $wp_version, '2.6.999', '<' ) && file_exists(ABSPATH . '/wp-admin/admin-ajax.php') && (basename($_SERVER['QUERY_STRING']) == 'page=fb_antispam.php') ) {
-					wp_enqueue_script( 'js_antispam_plugin_win_page',  plugins_url( $path = 'js-antispam/js/page_s27.php' ), array('jquery') );
-				}
-			}
-			
-			if ( function_exists('add_action') ) {
-				add_action( 'init', array(&$this,'textdomain') );
-				
-				add_action('comment_form', array(&$this, 'comment_form'));
-				add_action('comment_post', array(&$this, 'comment_post'));
+				add_action( 'admin_menu', array(&$this, 'add_fbjsas_page') );
+				add_action( 'in_admin_footer', array(&$this, 'add_fbjsas_admin_footer') );
+				add_action( 'admin_footer', array(&$this, 'add_script2admin_footer') );
+			} else {
+				add_action( 'comment_form', array(&$this, 'comment_form') );
+				add_action( 'comment_post', array(&$this, 'comment_post') );
 			}
 			
 			$this->answer = $this->answer_arr();
-
+			
+			
 			/**
 			 * Retrieve the url to the plugins directory.
 			 *
@@ -170,16 +175,16 @@ if ( !class_exists('fbjsas_check') ) {
 		
 			if (function_exists('load_plugin_textdomain')) {
 				if ( !defined('WP_PLUGIN_DIR') ) {
-					load_plugin_textdomain('js_antispam', str_replace( ABSPATH, '', dirname(__FILE__) ) . '/languages');
+					load_plugin_textdomain(FB_JSAS_TEXTDOMAIN, str_replace( ABSPATH, '', dirname(__FILE__) ) . '/languages');
 				} else {
-					load_plugin_textdomain('js_antispam', false, dirname( plugin_basename(__FILE__) ) . '/languages');
+					load_plugin_textdomain(FB_JSAS_TEXTDOMAIN, false, dirname( plugin_basename(__FILE__) ) . '/languages');
 				}
 			}
 		}
 		
 		
 		function answer_arr() {
-	
+			
 			$words = preg_split("/\r\n/", $GLOBALS['WPlize']->get_option('fbjsas_nojsanswer') );
 			foreach ( (array) $words as $key => $word ) {
 				$word = trim($word);
@@ -196,7 +201,6 @@ if ( !class_exists('fbjsas_check') ) {
 		function comment_form($form) {
 			
 			$select_answer = $this->answer;
-	
 			if ($select_answer == '') {
 				$select_answer = 'Spamschutz';
 			}
@@ -262,10 +266,10 @@ if ( !class_exists('fbjsas_check') ) {
 			if ( ($GLOBALS['WPlize']->get_option('fbjsas_trackback') == '1') && ($comment_type == 'trackback' || $comment_type == 'pingback' || $comment_type === '') ) {
 				if( $answer == '' ) {
 					$this->fbjsas_delete_comment($post_ID);
-					wp_die($errors['empty'] .'<br /><br /><strong>' . __('Your comment:', 'js_antispam') . '</strong><br /><em>'. $comment_content .'</em>');
+					wp_die($errors['empty'] .'<br /><br /><strong>' . __('Your comment:', FB_JSAS_TEXTDOMAIN) . '</strong><br /><em>'. $comment_content .'</em>');
 				} elseif ( $answer != $select_answer ) {
 					$this->fbjsas_delete_comment($post_ID);
-					wp_die($errors['wrong'] .'<br /><br /><strong>' . __('Your comment:', 'js_antispam') . '</strong><br /><em>'. $comment_content .'</em>');
+					wp_die($errors['wrong'] .'<br /><br /><strong>' . __('Your comment:', FB_JSAS_TEXTDOMAIN) . '</strong><br /><em>'. $comment_content .'</em>');
 				}
 			}
 			return $post_ID;
@@ -315,14 +319,14 @@ if ( !class_exists('fbjsas_check') ) {
 				if ( version_compare( $wp_version, '2.6.999', '>' ) ) {
 					$menutitle = '<img src="' . $this->fbjsas_get_resource_url('js-antispam.gif') . '" alt="" />' . ' ';
 				}
-				$menutitle .= __('JS AntiSpam', 'js_antispam');
+				$menutitle .= __('JS AntiSpam', FB_JSAS_TEXTDOMAIN);
 				
 				if ( version_compare( $wp_version, '2.6.999', '>' ) && function_exists('add_contextual_help') ) {
-					$hook = add_options_page( __('JS AntiSpam', 'js_antispam'), $menutitle, 8, basename(__FILE__), array(&$this, 'fbjsas_page') );
-					add_contextual_help( $hook, __('<a href="http://wordpress.org/extend/plugins/js-antispam/">Documentation</a>', 'js_antispam') );
+					$hook = add_options_page( __('JS AntiSpam', FB_JSAS_TEXTDOMAIN), $menutitle, 'manage_options', basename(__FILE__), array(&$this, 'fbjsas_page') );
+					add_contextual_help( $hook, __('<a href="http://wordpress.org/extend/plugins/js-antispam/">Documentation</a>', FB_JSAS_TEXTDOMAIN) );
 					//add_filter( 'contextual_help', array(&$this, 'contextual_help') );
 				} else {
-					add_options_page( __('JS AntiSpam', 'js_antispam'), $menutitle, 8, basename(__FILE__), array(&$this, 'fbjsas_page') );
+					add_options_page( __('JS AntiSpam', FB_JSAS_TEXTDOMAIN), $menutitle, 8, basename(__FILE__), array(&$this, 'fbjsas_page') );
 				}
 				
 				if ( version_compare( $wp_version, '2.6.999', '>' ) ) {
@@ -414,11 +418,11 @@ if ( !class_exists('fbjsas_check') ) {
 						$GLOBALS['WPlize']->update_option($update_options);
 					}
 					
-					echo '<div id="message" class="updated fade"><p>' . __('The options have been saved!', 'js_antispam') . '</p></div>';
+					echo '<div id="message" class="updated fade"><p>' . __('The options have been saved!', FB_JSAS_TEXTDOMAIN) . '</p></div>';
 
 				} else {
 				
-					echo '<div id="message" class="error"><p>' . __('Options not update - you don&lsquo;t have the privilidges to do this!', 'js_antispam') . '</p></div>';
+					echo '<div id="message" class="error"><p>' . __('Options not update - you don&lsquo;t have the privilidges to do this!', FB_JSAS_TEXTDOMAIN) . '</p></div>';
 				
 				}
 			}
@@ -439,9 +443,9 @@ if ( !class_exists('fbjsas_check') ) {
 					delete_option('fbjsas_delete_pb');
 					delete_option('fbjsas_trackback');
 			
-					echo '<div id="message" class="updated fade"><p>' . __('The options have been deleted!', 'js_antispam') . '</p></div>';
+					echo '<div id="message" class="updated fade"><p>' . __('The options have been deleted!', FB_JSAS_TEXTDOMAIN) . '</p></div>';
 				} else {
-					echo '<div id="message" class="error"><p>' . __('Entries was not delleted - check the checkbox or you don&lsquo;t have the privilidges to do this!', 'js_antispam') . '</p></div>';
+					echo '<div id="message" class="error"><p>' . __('Entries was not delleted - check the checkbox or you don&lsquo;t have the privilidges to do this!', FB_JSAS_TEXTDOMAIN) . '</p></div>';
 				}
 			}
 			
@@ -456,12 +460,13 @@ if ( !class_exists('fbjsas_check') ) {
 		?>
 		
 			<div class="wrap" id="config">		
-				<h2><?php _e('JS AntiSpam', 'js_antispam'); ?></h2>
+				<h2><?php _e('JS AntiSpam', FB_JSAS_TEXTDOMAIN); ?></h2>
 				<br class="clear" />
 		
-				<div id="poststuff" class="ui-sortable">
+				<div id="poststuff" class="ui-sortable meta-box-sortables">
 					<div id="fbjsas_settings_win_opt" class="postbox <?php echo $GLOBALS['WPlize']->get_option('fbjsas_settings_win_opt'); ?>" >
-						<h3><?php _e('Settings', 'js_antispam'); ?></h3>
+						<div class="handlediv" title="<?php _e('Click to toggle'); ?>"><br/></div>
+						<h3><?php _e('Settings', FB_JSAS_TEXTDOMAIN); ?></h3>
 						<div class="inside">
 							
 							<form method="post" id="fbjsas_options" action="">
@@ -469,57 +474,57 @@ if ( !class_exists('fbjsas_check') ) {
 								
 								<table summary="fbjsas_options" class="form-table">
 									<tr valign="top">
-										<th scope="row"><label for="fbjsas_nojsanswer"><?php _e('Reply', 'js_antispam'); ?></label></th>
+										<th scope="row"><label for="fbjsas_nojsanswer"><?php _e('Reply', FB_JSAS_TEXTDOMAIN); ?></label></th>
 										<td>
 											<textarea name="fbjsas_nojsanswer" cols="60" rows="3" id="fbjsas_nojsanswer" style="width: 99%;" ><?php echo $fbjsas_nojsanswer; ?></textarea>
 											<br />
-											<?php _e('Possible answers. Separate multiple answers through a carriage return. Complex answers will make things more difficult not only for spam robots but visitors as well. The standard reply when no answer is given is "Spam Protection".', 'js_antispam'); ?>
+											<?php _e('Possible answers. Separate multiple answers through a carriage return. Complex answers will make things more difficult not only for spam robots but visitors as well. The standard reply when no answer is given is "Spam Protection".', FB_JSAS_TEXTDOMAIN); ?>
 										</td>
 									</tr>
 									<tr valign="top">
-										<th scope="row"><label for="fbjsas_advice"><?php _e('Warning', 'js_antispam'); ?></label></th>
+										<th scope="row"><label for="fbjsas_advice"><?php _e('Warning', FB_JSAS_TEXTDOMAIN); ?></label></th>
 										<td>
 											<textarea name="fbjsas_advice" cols="60" rows="3" id="fbjsas_advice" style="width: 99%;" /><?php echo $fbjsas_advice; ?></textarea>
 											<br />
-											<?php _e('Assign the password hint %word% to see it displayed when prompted.', 'js_antispam'); ?>
+											<?php _e('Assign the password hint %word% to see it displayed when prompted.', FB_JSAS_TEXTDOMAIN); ?>
 										</td>
 									</tr>
 									<tr valign="top">
-										<th scope="row"><label for="fbjsas_empty"><?php _e('Empty', 'js_antispam'); ?></label></th>
+										<th scope="row"><label for="fbjsas_empty"><?php _e('Empty', FB_JSAS_TEXTDOMAIN); ?></label></th>
 										<td>
 											<textarea rows="3" cols="60" name="fbjsas_empty" id="fbjsas_empty" style="width: 99%;" /><?php echo $fbjsas_empty; ?></textarea>
 											<br />
-											<?php _e('The warning you wish to give when the field is <strong>not</strong> filled out. xHTML allowed', 'js_antispam'); ?>
+											<?php _e('The warning you wish to give when the field is <strong>not</strong> filled out. xHTML allowed', FB_JSAS_TEXTDOMAIN); ?>
 											</td>
 									</tr>
 									<tr valign="top">
-										<th scope="row"><label for="fbjsas_wrong"><?php _e('Wrong', 'js_antispam'); ?></label></th>
+										<th scope="row"><label for="fbjsas_wrong"><?php _e('Wrong', FB_JSAS_TEXTDOMAIN); ?></label></th>
 										<td>
 											<textarea rows="3" cols="60" name="fbjsas_wrong" id="fbjsas_wrong" style="width: 99%;" /><?php echo $fbjsas_wrong; ?></textarea>
 											<br />
-											<?php _e('The warning you wish to give when the field is <strong>not</strong> filled out correctly. xHTML allowed.', 'js_antispam'); ?>
+											<?php _e('The warning you wish to give when the field is <strong>not</strong> filled out correctly. xHTML allowed.', FB_JSAS_TEXTDOMAIN); ?>
 											</td>
 									</tr>
 									<tr valign="top">
-										<th scope="row"><label for="fbjsas_delete"><?php _e('Immediately delete comments', 'js_antispam'); ?></label></th>
-										<td><input name="fbjsas_delete" id="fbjsas_delete" value='1' <?php if ($fbjsas_delete == '1') { echo "checked='checked'";  } ?> type="checkbox" /> <?php _e('Should comments recognized as spam be immediately deleted or saved in the database as spam?', 'js_antispam'); ?> <br /><?php _e('<strong>Careful! (This also applies to the fields Trackback and Pingback below).</strong> Use this option when you do not wish to have information in your database about "spam" content. Content marked as spam in the database can be viewed with a plugin such as <a href=\'http://bueltge.de/wp-spamviewer-zum-loeschen-und-retten-von-spam/255\' title=\'to the plugin\'>SpamViewer</a> and recovered if applicable. Furthermore, using this option will cause comments re-posted after the spam key was entered incorrectly once to be be treated as double posts, which is not allowed: at least one character must be changed.', 'js_antispam'); ?></td>
+										<th scope="row"><label for="fbjsas_delete"><?php _e('Immediately delete comments', FB_JSAS_TEXTDOMAIN); ?></label></th>
+										<td><input name="fbjsas_delete" id="fbjsas_delete" value='1' <?php if ($fbjsas_delete == '1') { echo "checked='checked'";  } ?> type="checkbox" /> <?php _e('Should comments recognized as spam be immediately deleted or saved in the database as spam?', FB_JSAS_TEXTDOMAIN); ?> <br /><?php _e('<strong>Careful! (This also applies to the fields Trackback and Pingback below).</strong> Use this option when you do not wish to have information in your database about "spam" content. Content marked as spam in the database can be viewed with a plugin such as <a href=\'http://bueltge.de/wp-spamviewer-zum-loeschen-und-retten-von-spam/255\' title=\'to the plugin\'>SpamViewer</a> and recovered if applicable. Furthermore, using this option will cause comments re-posted after the spam key was entered incorrectly once to be be treated as double posts, which is not allowed: at least one character must be changed.', FB_JSAS_TEXTDOMAIN); ?></td>
 									</tr>
 									<tr valign="top">
-										<th scope="row"><label for="fbjsas_delete_tb"><?php _e('Delete trackback immediately', 'js_antispam'); ?></label></th>
-										<td><input name="fbjsas_delete_tb" id="fbjsas_delete_tb" value='1' <?php if ($fbjsas_delete_tb == '1') { echo "checked='checked'";  } ?> type="checkbox" /> <?php _e('Should trackbacks recognized as spam be immediately deleted or saved in the database as spam?', 'js_antispam'); ?></td>
+										<th scope="row"><label for="fbjsas_delete_tb"><?php _e('Delete trackback immediately', FB_JSAS_TEXTDOMAIN); ?></label></th>
+										<td><input name="fbjsas_delete_tb" id="fbjsas_delete_tb" value='1' <?php if ($fbjsas_delete_tb == '1') { echo "checked='checked'";  } ?> type="checkbox" /> <?php _e('Should trackbacks recognized as spam be immediately deleted or saved in the database as spam?', FB_JSAS_TEXTDOMAIN); ?></td>
 									</tr>
 									<tr valign="top">
-										<th scope="row"><label for="fbjsas_delete_pb"><?php _e('Delete pingback immediately', 'js_antispam'); ?></label></th>
-										<td><input name="fbjsas_delete_pb" id="fbjsas_delete_pb" value='1' <?php if ($fbjsas_delete_pb == '1') { echo "checked='checked'";  } ?> type="checkbox" /> <?php _e('Should pingbacks recognized as spam be immediately deleted or saved in the database as spam', 'js_antispam'); ?></td>
+										<th scope="row"><label for="fbjsas_delete_pb"><?php _e('Delete pingback immediately', FB_JSAS_TEXTDOMAIN); ?></label></th>
+										<td><input name="fbjsas_delete_pb" id="fbjsas_delete_pb" value='1' <?php if ($fbjsas_delete_pb == '1') { echo "checked='checked'";  } ?> type="checkbox" /> <?php _e('Should pingbacks recognized as spam be immediately deleted or saved in the database as spam', FB_JSAS_TEXTDOMAIN); ?></td>
 									</tr>
 									<tr valign="top">
-										<th scope="row"><label for="fbjsas_trackback"><?php _e('Trackback/Pingback', 'js_antispam'); ?></label></th>
-										<td><input name="fbjsas_trackback" id="fbjsas_trackback" value='1' <?php if ($fbjsas_trackback == '1') { echo "checked='checked'";  } ?> type="checkbox" /> <?php _e('Allow trackbacks and pingbacks to be approved without filtering. <br /> Activate this option when the option "Delete immediately" is active, otherwise tracbacks ans pingbacks will be immediately deleted and not saved in the database.', 'js_antispam'); ?></td>
+										<th scope="row"><label for="fbjsas_trackback"><?php _e('Trackback/Pingback', FB_JSAS_TEXTDOMAIN); ?></label></th>
+										<td><input name="fbjsas_trackback" id="fbjsas_trackback" value='1' <?php if ($fbjsas_trackback == '1') { echo "checked='checked'";  } ?> type="checkbox" /> <?php _e('Allow trackbacks and pingbacks to be approved without filtering. <br /> Activate this option when the option "Delete immediately" is active, otherwise tracbacks ans pingbacks will be immediately deleted and not saved in the database.', FB_JSAS_TEXTDOMAIN); ?></td>
 									</tr>
 									</table>
 									
 									<p class="submit">
-										<input type="submit" name="Submit" value="<?php _e('Save Changes', 'js_antispam'); ?> &raquo;" />
+										<input type="submit" name="Submit" value="<?php _e('Save Changes', FB_JSAS_TEXTDOMAIN); ?> &raquo;" />
 										<input type="hidden" name="action" value="update" />
 									</p>
 							</form>
@@ -528,17 +533,18 @@ if ( !class_exists('fbjsas_check') ) {
 					</div>
 				</div>
 				
-				<div id="poststuff" class="ui-sortable">
+				<div id="poststuff" class="ui-sortable meta-box-sortables">
 					<div id="fbjsas_settings_win_uninstall" class="postbox <?php echo $GLOBALS['WPlize']->get_option('fbjsas_settings_win_uninstall'); ?>" >
-						<h3><?php _e('Uninstall options', 'js_antispam') ?></h3>
+						<div class="handlediv" title="<?php _e('Click to toggle'); ?>"><br/></div>
+						<h3><?php _e('Uninstall options', FB_JSAS_TEXTDOMAIN) ?></h3>
 						<div class="inside">
-							<p><?php _e('Click this button to delete settings of this plugin. Deactivating JS AntiSpam plugin remove any data that may have been created.', 'js_antispam'); ?></p>
+							<p><?php _e('Click this button to delete settings of this plugin. Deactivating JS AntiSpam plugin remove any data that may have been created.', FB_JSAS_TEXTDOMAIN); ?></p>
 							
 							<form name="form2" method="post" action="<?php echo $location; ?>">
 								<?php if (function_exists('wp_nonce_field') === true) wp_nonce_field('fbjsas_uninstall_form'); ?>
 								<p id="submitbutton">
 									<input type="hidden" name="action" value="deactivate" />
-									<input class="button" type="submit" name="fbjsas_uninstall" value="<?php _e('Delete Options', 'js_antispam'); ?> &raquo;" />
+									<input class="button" type="submit" name="fbjsas_uninstall" value="<?php _e('Delete Options', FB_JSAS_TEXTDOMAIN); ?> &raquo;" />
 									<input type="checkbox" name="deinstall_yes" />
 								</p>
 							</form>
@@ -547,18 +553,43 @@ if ( !class_exists('fbjsas_check') ) {
 					</div>
 				</div>
 				
-				<div id="poststuff" class="ui-sortable">
+				<div id="poststuff" class="ui-sortable meta-box-sortables">
 					<div id="fbjsas_settings_win_about" class="postbox <?php echo $GLOBALS['WPlize']->get_option('fbjsas_settings_win_about'); ?>" >
+						<div class="handlediv" title="<?php _e('Click to toggle'); ?>"><br/></div>
 						<h3 id="about"><?php _e('Information on the plugin', 'sayfasayacprc') ?></h3>
 						<div class="inside">
-							<p><?php _e('Further information: Visit the <a href=\'http://bueltge.de/wp-js-antispam-plugin/418\'>plugin homepage</a> for further information or to grab the latest version of this plugin.', 'js_antispam'); ?><br />&copy; Copyright 2007 - <?php echo date('Y'); ?> <a href="http://bueltge.de">Frank B&uuml;ltge</a> | <?php _e('You want to thank me? Visit my <a href=\'http://bueltge.de/wunschliste\'>wishlist</a>.', 'js_antispam'); ?></p>
+							<p><?php _e('Further information: Visit the <a href=\'http://bueltge.de/wp-js-antispam-plugin/418\'>plugin homepage</a> for further information or to grab the latest version of this plugin.', FB_JSAS_TEXTDOMAIN); ?><br />&copy; Copyright 2007 - <?php echo date('Y'); ?> <a href="http://bueltge.de">Frank B&uuml;ltge</a> | <?php _e('You want to thank me? Visit my <a href=\'http://bueltge.de/wunschliste\'>wishlist</a>.', FB_JSAS_TEXTDOMAIN); ?></p>
 						</div>
 					</div>
 				</div>
 		
 			</div>
 		<?php
-		}		
+		}
+		
+		
+		function add_script2admin_footer() {
+			?>
+			<script type="text/javascript">
+				jQuery(document).ready( function($) {
+				$('.postbox h3, .handlediv').click(
+					function() {
+						var postbox = $($(this).parent().get(0));
+						postbox.toggleClass('closed');
+						var closed = postbox.is('.closed');
+						$.post(
+							'<?php echo get_bloginfo("wpurl") ?>/wp-admin/admin-ajax.php', {
+								'action':'set_toggle_status',
+								'set_toggle_id':postbox.attr('id'),
+								'set_toggle_status': (closed ? 'closed' : '')
+							}
+						);
+					}
+				);
+				});
+			</script>
+		<?php
+		}
 		
 	} // end class
 
