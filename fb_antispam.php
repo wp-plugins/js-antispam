@@ -7,8 +7,8 @@ Author: Frank B&uuml;ltge
 Author URI: http://bueltge.de/
 Donate URI: http://bueltge.de/wunschliste/
 License: GPL
-Version: 1.2.3
-Last Change: 23.04.2010 11:30:44
+Version: 1.2.4
+Last Change: 05.05.2010 16:30:44
 */
 
 /*
@@ -50,6 +50,8 @@ if ( !function_exists('add_action') ) {
 	
 	define( 'BROWSER_QUESTION', false ); 
 	define( 'FB_JSAS_TEXTDOMAIN', 'js_antispam' );
+	define( 'FB_JSAS_BASENAME', plugin_basename(__FILE__) );
+	define( 'FB_JSAS_BASEFOLDER', plugin_basename( dirname( __FILE__ ) ) );
 }
 /**
  * Images/ Icons in base64-encoding
@@ -103,6 +105,7 @@ if ( !class_exists('fbjsas_check') ) {
 	
 		// constructor
 		function fbjsas_check() {
+			global $wp_version;
 			
 			// set default options
 			$this->options_array = array('fbjsas_nojsanswer' => 'Mensch',
@@ -124,12 +127,14 @@ if ( !class_exists('fbjsas_check') ) {
 			// wp_hook add_action
 			add_action( 'init', array(&$this,'textdomain') );
 			if ( is_admin() ) {
-				if ( function_exists('register_uninstall_hook') )
-					register_uninstall_hook(__FILE__, array(&$this, 'fbjsas_uninstall') );
-				
 				add_action( 'admin_menu', array(&$this, 'add_fbjsas_page') );
 				add_action( 'in_admin_footer', array(&$this, 'add_fbjsas_admin_footer') );
-				add_action( 'admin_footer', array(&$this, 'add_script2admin_footer') );
+				// add javascript for metaboxes
+				if ( version_compare( $wp_version, '2.7alpha', '>' ) && file_exists(ABSPATH . '/wp-admin/admin-ajax.php') && (basename($_SERVER['QUERY_STRING']) == 'page=fb_antispam.php') ) {
+					wp_enqueue_script( 'jsas_plugin_win_page',  WP_PLUGIN_URL . '/' . FB_JSAS_BASEFOLDER . '/js/page.php', array('jquery') );
+				} elseif ( version_compare( $wp_version, '2.7alpha', '<' ) && file_exists(ABSPATH . '/wp-admin/admin-ajax.php') && (basename($_SERVER['QUERY_STRING']) == 'page=fb_antispam.php') ) {
+					wp_enqueue_script( 'jsas_plugin_win_page', WP_PLUGIN_URL . '/' . FB_JSAS_BASEFOLDER . '/js/page_s27.php', array('jquery') );
+				}
 			} else {
 				add_action( 'comment_form', array(&$this, 'comment_form') );
 				add_action( 'comment_post', array(&$this, 'comment_post') );
@@ -567,29 +572,6 @@ if ( !class_exists('fbjsas_check') ) {
 		<?php
 		}
 		
-		
-		function add_script2admin_footer() {
-			?>
-			<script type="text/javascript">
-				jQuery(document).ready( function($) {
-				$('.postbox h3, .handlediv').click(
-					function() {
-						var postbox = $($(this).parent().get(0));
-						postbox.toggleClass('closed');
-						var closed = postbox.is('.closed');
-						$.post(
-							'<?php echo get_bloginfo("wpurl") ?>/wp-admin/admin-ajax.php', {
-								'action':'set_toggle_status',
-								'set_toggle_id':postbox.attr('id'),
-								'set_toggle_status': (closed ? 'closed' : '')
-							}
-						);
-					}
-				);
-				});
-			</script>
-		<?php
-		}
 		
 	} // end class
 

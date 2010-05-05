@@ -3,7 +3,7 @@ Contributors: Bueltge
 Donate link: http://bueltge.de/wunschliste/
 Tags: spam, protection, javascript, anti-spam
 Requires at least: 2.7
-Tested up to: 3.0-alpha
+Tested up to: 3.0-beta1
 
 Simple antispam plugin without questions on Javascript-solution. Without JS-Solutions give it an textbox.
 
@@ -24,6 +24,10 @@ See on [the official website](http://bueltge.de/wp-js-antispam-plugin/418/ "JS A
 1. configure-area (WP 2.7)
 
 == Changelog ==
+= v1.2.4 (05/05/2010) =
+* fix js-error for oben boxes
+* add uninstall.php for default deinstall options without source of the plugin
+
 = v1.2.3 (04/23/2010) =
 * change include js for metaboxes
 * test with WP 3.0beta1
