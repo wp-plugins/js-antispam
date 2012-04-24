@@ -1,0 +1,172 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: JS AntiSpam\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-26 14:01+0100\n"
+"PO-Revision-Date: 2012-03-10 17:34+0200\n"
+"Last-Translator: \n"
+"Language-Team: Frank Bueltge <frank@bueltge.de>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Basepath: D:\\Eigene\\WP-Plugins\\JS AntiSpam\\trunk\\\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: fb_antispam.php:257
+#: fb_antispam.php:260
+msgid "Your comment:"
+msgstr "Jūsų komentaras:"
+
+#: fb_antispam.php:310
+#: fb_antispam.php:313
+#: fb_antispam.php:317
+#: fb_antispam.php:451
+msgid "JS AntiSpam"
+msgstr "JS AntiSpam"
+
+#: fb_antispam.php:314
+msgid "<a href=\"http://wordpress.org/extend/plugins/js-antispam/\">Documentation</a>"
+msgstr "<a href=\"http://wordpress.org/extend/plugins/js-antispam/\">Dokumentacija</a>"
+
+#: fb_antispam.php:339
+#: fb_antispam.php:352
+#: fb_antispam.php:456
+msgid "Settings"
+msgstr "Nuostatos"
+
+#: fb_antispam.php:376
+msgid "Version"
+msgstr "Versija"
+
+#: fb_antispam.php:376
+msgid "Author"
+msgstr "Autorius"
+
+#: fb_antispam.php:409
+msgid "The options have been saved!"
+msgstr "Jūsų parintys įrašytos!"
+
+#: fb_antispam.php:413
+msgid "Options not update - you don&lsquo;t have the privilidges to do this!"
+msgstr "Parinktys neįrašytos - Jūs neturite reikiamų teisių šio veiksmo atlikimui!"
+
+#: fb_antispam.php:434
+msgid "The options have been deleted!"
+msgstr "Parinktys ištrintos!"
+
+#: fb_antispam.php:436
+msgid "Entries was not delleted - check the checkbox or you don&lsquo;t have the privilidges to do this!"
+msgstr "Įrašai neištrinti! Pažymėkite žymymąjį langelį arba, tikėtina, jog Jūs neturite šio veiksmo atlikimui!"
+
+#: fb_antispam.php:464
+msgid "Reply"
+msgstr "Atsakyti"
+
+#: fb_antispam.php:468
+msgid "Possible answers. Separate multiple answers through a carriage return. Complex answers will make things more difficult not only for spam robots but visitors as well. The standard reply when no answer is given is \"Spam Protection\"."
+msgstr "Galimi atsakymai. Atskirkite skirtingus atsakymus grįždamas į eilučių pradžią. Sudėtingi atsakymai apsunkis ne tik brukalų robotų darbą, bet ir lankytojų veiklą. Standartinis atsakymas, kuomet joks klausimas neužduotas yra \"Spam Protection\"."
+
+#: fb_antispam.php:472
+msgid "Warning"
+msgstr "Įspėjimas"
+
+#: fb_antispam.php:476
+msgid "Assign the password hint %word% to see it displayed when prompted."
+msgstr "Priskirkite savo slaptažodžiui trumpinį (nuorodą), rodomą, kuomet pasirodo reikalavimas įvesti slaptažodį."
+
+#: fb_antispam.php:480
+msgid "Empty"
+msgstr "Tuščia"
+
+#: fb_antispam.php:484
+msgid "The warning you wish to give when the field is <strong>not</strong> filled out. xHTML allowed"
+msgstr "Įspėjimas, kurį norite pridėti šiam laukeliui <strong>neįrašytas</strong>. xHTML kalba leidžiama. Reikiamame laukelyje neįrašėtė atsakymo į anti-brukalų filtro klausimą. Jūsų komentaras nebuvo įrašytas. Sugrįžkite žingsniu atgal (naudodami mygtuką \"Atgal\") ir atsakykite į klausimą."
+
+#: fb_antispam.php:488
+msgid "Wrong"
+msgstr "Neteisingai"
+
+#: fb_antispam.php:492
+msgid "The warning you wish to give when the field is <strong>not</strong> filled out correctly. xHTML allowed."
+msgstr "Įspėjimas, kurį norite pridėti šiam laukeliui <strong>neįrašytas</strong>. xHTML kalba leidžiama. Reikiamame laukelyje neįrašėtė atsakymo į anti-brukalų filtro klausimą. Jūsų komentaras nebuvo įrašytas. Sugrįžkite žingsniu atgal (naudodami mygtuką \"Atgal\") ir atsakykite į klausimą. Didžiosios ir mažosios raidės turi skirtingas reikšmes."
+
+#: fb_antispam.php:496
+msgid "Immediately delete comments"
+msgstr "Tučtuojau ištrinti komentarus"
+
+#: fb_antispam.php:497
+msgid "Should comments recognized as spam be immediately deleted or saved in the database as spam?"
+msgstr "Komantarai, pripažinti brukalais turėtų būti ištrinti iš karto, ar norite, jog jie būtų kaupiami atskiroje brukalų duomenų bazėje?"
+
+#: fb_antispam.php:497
+msgid "<strong>Careful! (This also applies to the fields Trackback and Pingback below).</strong> Use this option when you do not wish to have information in your database about \"spam\" content. Content marked as spam in the database can be viewed with a plugin such as <a href='http://bueltge.de/wp-spamviewer-zum-loeschen-und-retten-von-spam/255' title='to the plugin'>SpamViewer</a> and recovered if applicable. Furthermore, using this option will cause comments re-posted after the spam key was entered incorrectly once to be be treated as double posts, which is not allowed: at least one character must be changed."
+msgstr "<strong>Atsargiai! (Tai taip pat galioja cituojantiesiems ir paprastiesiems paminėjimo sekimų laukeliams).</strong> Naudokite šią parinktį, kuomet savo duomenų bazėje nenorite kaupti informacijos apie  \"brukalais\" užterštą turinį. Turinys, pažymėtas kaip užterštas brukalais, gali būti, jei įmanoma, peržiūrėtas ir atsatytas naudojant papildinį<a href='http://bueltge.de/wp-spamviewer-zum-loeschen-und-retten-von-spam/255' title='to the plugin'>SpamViewer</a>. Be to, šio papildinio naudojimas gali nulemti komentarų būtinąjį komentarų pakeitimą po to, kai brukalų filtravimo raktas bus įvestas neteisingai. Reikės pakeisti bent vieną komentaro simbolį, kad šis, antrąkart nesuklydus (vedant brukalų filtro raktą) būtų publikuojamas."
+
+#: fb_antispam.php:500
+msgid "Delete trackback immediately"
+msgstr "Tučtuojau ištrinti cituojančiuočius paminėjimo sekiklius."
+
+#: fb_antispam.php:501
+msgid "Should trackbacks recognized as spam be immediately deleted or saved in the database as spam?"
+msgstr "Cituojantieji paminėjimo sekikliai, pripažinti brukalais turėtų būti ištrinti iš karto, ar norite, jog jie būtų kaupiami atskiroje brukalų duomenų bazėje?"
+
+#: fb_antispam.php:504
+msgid "Delete pingback immediately"
+msgstr "Tučtuojau ištrinti paminėjimo sekiklius."
+
+#: fb_antispam.php:505
+msgid "Should pingbacks recognized as spam be immediately deleted or saved in the database as spam"
+msgstr "Paminėjimo sekikliai, pripažinti brukalais turėtų būti ištrinti iš karto, ar norite, jog jie būtų kaupiami atskiroje brukalų duomenų bazėje?"
+
+#: fb_antispam.php:508
+msgid "Trackback/Pingback"
+msgstr "Cituojantieji/Paprastieji paminėjimo sekikliai"
+
+#: fb_antispam.php:509
+msgid "Allow trackbacks and pingbacks to be approved without filtering. <br /> Activate this option when the option \"Delete immediately\" is active, otherwise tracbacks ans pingbacks will be immediately deleted and not saved in the database."
+msgstr "Leisti priimti cituojančiuosius ir paprastus paminėjimo sekiklius be filtravimo. <br /> Aktyvuokite šią parinktį tuomet, kai ir parinktis \"Tučtuojau ištrinti\" yra aktyvi, kitaip cituojantieji ir paprastieji paminėjimo sekikliai bus iš karto ištrinti ir neišsaugoti duomenų bazėje."
+
+#: fb_antispam.php:514
+msgid "Save Changes"
+msgstr "Įrašyti Pakeitimus"
+
+#: fb_antispam.php:525
+msgid "Uninstall options"
+msgstr "Ištrinti parinktis"
+
+#: fb_antispam.php:527
+msgid "Click this button to delete settings of this plugin. Deactivating JS AntiSpam plugin remove any data that may have been created."
+msgstr "Paspauskite šį mygtuką, norėdami ištrinti šio papildinio nuostatas. JS AntiSpam papildinio deaktyvavimas ištrins visus duomenis, prie kurių įrašymo į duomenų bazę prisidėjo."
+
+#: fb_antispam.php:533
+msgid "Delete Options"
+msgstr "Ištrinti Parinktis"
+
+#: fb_antispam.php:544
+msgid "Information on the plugin"
+msgstr "Informacija apie papildinį"
+
+#: fb_antispam.php:546
+msgid "Further information: Visit the <a href='http://bueltge.de/wp-js-antispam-plugin/418'>plugin homepage</a> for further information or to grab the latest version of this plugin."
+msgstr "Papildoma informacija: Norėdami sužinoti daugiau arba atnaujinti šį papildinį, apsilankykite <a href='http://bueltge.de/wp-js-antispam-plugin/418'>Papildinių tinklapyje</a>. "
+
+#: fb_antispam.php:546
+msgid "You want to thank me? Visit my <a href='http://bueltge.de/wunschliste'>wishlist</a>."
+msgstr "Norite man padėkoti? Peržvelkite mano <a href=\"http://bueltge.de/wunschliste/\">norų sąrašą</a>"
+
+#~ msgid ""
+#~ "You do not have sufficient permissions to edit plugins for this blog."
+#~ msgstr "Du hast nicht ausreichend Rechte um das Plugin zu ändern."
+
+#~ msgid "Update Options"
+#~ msgstr "Einstellungen aktualisieren"
+
+#~ msgid ""
+#~ "This button deletes all options of the JS AntiSpam plugin. Please use it "
+#~ "<strong>before</strong> deactivating the plugin.<br /><strong>Attention: "
+#~ "</strong>You cannot undo this!"
+#~ msgstr ""
+#~ "Der Button löscht alle Einstellungen des Plugins JS AntiSpam. Bitte nutze "
+#~ "ihn, <strong>bevor</strong> das Plugin deaktiviert wird.<strong>Achtung: "
+#~ "</strong>Du kannst dies nicht rückgängig machen!"
